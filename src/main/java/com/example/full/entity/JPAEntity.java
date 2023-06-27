@@ -1,4 +1,4 @@
-package com.example.full;
+package com.example.full.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -9,7 +9,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name ="mytable") // 클래스명과 테이블명이 다를때 매핑시켜주기위해 사용
+@Table(name ="mytable3") // 클래스명과 테이블명이 다를때 매핑시켜주기위해 사용
 @Entity // db의 테이블을 뜻함
 public class JPAEntity {
     @Id // pk
