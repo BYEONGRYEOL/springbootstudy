@@ -1,7 +1,10 @@
 package com.example.full.entity.member;
 
 import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
 
+@Entity
+@NoArgsConstructor
 public class Role {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "role_id")
