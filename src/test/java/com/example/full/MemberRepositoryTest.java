@@ -9,6 +9,7 @@ import com.example.full.repository.member.MemberRepository;
 import com.example.full.repository.member.RoleRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,6 +24,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
+@Transactional
+
 public class MemberRepositoryTest {
     @Autowired
     MemberRepository memberRepository;
@@ -149,9 +152,9 @@ public class MemberRepositoryTest {
     @Test
     void memberRoleCascadePersistTest(){
         //given
-        List<RoleType> roleTypes = List.of(RoleType.class.getEnumConstants());
+        List<RoleType> roleTypes = List.of(RoleType.class.getEnumConstants()); // Transient RoleType
         List<Role> roles = roleTypes.stream().map(roleType -> new Role(roleType)).collect(Collectors.toList());
-        roleRepository.saveAll(roles);
+        roleRepository.saveAll(roles); // Persistent RoleType
         clear();
 
         Member member = memberRepository.save(createMemberWithRoles(roles));
@@ -159,10 +162,14 @@ public class MemberRepositoryTest {
         //when
 
         Member foundMember = memberRepository.findById(member.getId()).orElseThrow(MemberNotFoundException::new);
-        List<MemberRole> memberRoles = List.of((MemberRole) foundMember.getRoles());
+        Set<MemberRole> memberRoles = foundMember.getRoles();
 
         //then
-        assertThat(memberRoles.equals(roles)).isTrue();
+        assertThat(memberRoles.size()).isEqualTo(roles.size()); //영속성 테스트
+        //내가 select한 member row 그러니까 Member 객체에 role 값이 내가 만들엇떤 것과 똑같은 값이 나오지 않을 수도 있다?
+
+
+
     }
 
     @Test
@@ -176,6 +183,7 @@ public class MemberRepositoryTest {
         Member member = memberRepository.save(createMemberWithRoles(roleRepository.findAll()));
         clear();
 
+        
         // when
         memberRepository.deleteById(member.getId());
         clear();
