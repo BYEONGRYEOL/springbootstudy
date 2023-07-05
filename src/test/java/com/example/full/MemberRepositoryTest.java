@@ -163,7 +163,7 @@ public class MemberRepositoryTest {
 
         Member foundMember = memberRepository.findById(member.getId()).orElseThrow(MemberNotFoundException::new);
         Set<MemberRole> memberRoles = foundMember.getRoles();
-
+        //TODO memberRoles 안의 Role 컬럼들이 null값인데 괜찮은건가?
         //then
         assertThat(memberRoles.size()).isEqualTo(roles.size()); //영속성 테스트
         //내가 select한 member row 그러니까 Member 객체에 role 값이 내가 만들엇떤 것과 똑같은 값이 나오지 않을 수도 있다?
@@ -190,7 +190,9 @@ public class MemberRepositoryTest {
 
         // then
         List<MemberRole> result = em.createQuery("select mr from MemberRole mr", MemberRole.class).getResultList();
+        assertThat(result.size()).isZero();
     }
+
     private Member createMember(){
         return new Member("sbl1998@naver.com", "asdf", "서병렬", "지수조아", emptyList());
     }
