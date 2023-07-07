@@ -1,4 +1,4 @@
-package com.example.full;
+package com.example.full.repository.member;
 
 import com.example.full.entity.member.Role;
 import com.example.full.entity.member.RoleType;
