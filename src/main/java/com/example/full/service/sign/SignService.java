@@ -1,7 +1,10 @@
 package com.example.full.service.sign;
 
+import com.example.full.dto.sign.SignInRequest;
 import com.example.full.dto.sign.SignUpRequest;
+import com.example.full.entity.member.Member;
 import com.example.full.entity.member.RoleType;
+import com.example.full.exception.LoginFailureException;
 import com.example.full.exception.MemberEmailAlreadyExistsException;
 import com.example.full.exception.MemberNicknameAlreadyExistsException;
 import com.example.full.exception.RoleNotFoundException;
@@ -21,7 +24,7 @@ public class SignService {
     private final MemberRepository memberRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final TokenService tokenService;
+    //private final TokenService tokenService;
 
     @Transactional
     public void signUp(SignUpRequest req){
@@ -38,5 +41,15 @@ public class SignService {
             throw new MemberEmailAlreadyExistsException(req.getEmail());
         if(memberRepository.existsByNickname(req.getNickname()))
             throw new MemberNicknameAlreadyExistsException(req.getNickname());
+    }
+
+    private void validatePassword(SignInRequest req, Member member){
+        if(!passwordEncoder.matches(req.getPassword(), member.getPassword())){
+            throw new LoginFailureException();
+        }
+    }
+
+    private String createSubject(Member member){
+        return String.valueOf(member.getId());
     }
 }
