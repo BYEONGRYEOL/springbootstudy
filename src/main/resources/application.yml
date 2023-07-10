@@ -1,0 +1,12 @@
+spring:
+  profiles:
+    active:
+      - sbl
+    group:
+      dell:
+        - db-dell
+      sbl:
+        - db-sbl
+    include:
+      - db
+      - secret
