@@ -1,6 +1,7 @@
 package com.example.full.service.sign;
 
 import com.example.full.dto.sign.SignInRequest;
+import com.example.full.dto.sign.SignInResponse;
 import com.example.full.dto.sign.SignUpRequest;
 import com.example.full.entity.member.Member;
 import com.example.full.entity.member.RoleType;
@@ -24,16 +25,31 @@ public class SignService {
     private final MemberRepository memberRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    //private final TokenService tokenService;
+    private final TokenService tokenService;
 
     @Transactional
     public void signUp(SignUpRequest req){
+        // 전달받은 회원가입 정보가 유효한지 검사
         validateSignUpInfo(req);
 
         memberRepository.save(SignUpRequest.toEntity(req,
                 roleRepository.findByRoleType(RoleType.ROLE_NORMAL).orElseThrow(RoleNotFoundException::new),
                 passwordEncoder));
     }
+    public SignInResponse signIn(SignInRequest req){
+        // 로그인 요청받은 멤버를 DB에서 조회
+        Member member = memberRepository.findByEmail(req.getEmail()).orElseThrow(LoginFailureException::new);
+        // 입력받은 암호화된 password가 db에 저장된 password와 같은지 검사 (유효성 검사)
+        validatePassword(req, member);
+        // 토큰의 subject
+        String subject = createSubject(member);
+        String accessToken = tokenService.createAccessToken(subject);
+        String refreshToken = tokenService.createRefreshToken(subject);
+        return new SignInResponse(accessToken, refreshToken);
+
+    }
+
+
 
     private void validateSignUpInfo(SignUpRequest req){
         // 회원가입시 체크해야하는 상황

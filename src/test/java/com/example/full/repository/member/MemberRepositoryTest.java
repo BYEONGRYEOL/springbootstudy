@@ -169,6 +169,13 @@ public class MemberRepositoryTest {
         //when
 
         Member foundMember = memberRepository.findById(member.getId()).orElseThrow(MemberNotFoundException::new);
+        //아까 EntityManager가 쿼리문도 즉시 날아가도록 했고 영속성 컨텍스트에 캐싱된 엔티티들도 삭제했기때문에 여기서
+        //1.Repository가 JpaRepository의 Query Creation 으로 동적으로 생성된 조회 쿼리문 실행
+        //2.먼저 영속성 컨텍스트에 조회하는 엔티티가 있는지 확인, 영속성 컨텍스트의 캐시를 지웠으니 없음
+        //3. 영속성 컨텍스트에 없다면 DB에 접근하여 조회한다.
+
+        //위 과정을 확인하기 위해 디버깅해보면 아까 저장한 엔티티 클래스의 식별자id(pointer) 와 조회한 엔티티 클래스의 식별자id가 다르다.
+
         Set<MemberRole> memberRoles = foundMember.getRoles();
         //then
         assertThat(memberRoles.size()).isEqualTo(roles.size()); //영속성 테스트

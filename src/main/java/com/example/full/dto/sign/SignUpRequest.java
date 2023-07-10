@@ -17,6 +17,7 @@ public class SignUpRequest {
     private String username;
     private String nickname;
 
+    // Member Entity에 대하여 의존성이 생겨버리지만, 서비스 로직의 가독성을 위해 작성
     public static Member toEntity(SignUpRequest req, Role role, PasswordEncoder encoder){
         return new Member(req.email, encoder.encode(req.password), req.username, req.nickname, List.of(role));
     }
