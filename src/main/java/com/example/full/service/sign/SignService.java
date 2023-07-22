@@ -26,7 +26,8 @@ public class SignService {
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
 
-    @Transactional
+
+    @Transactional // save 사용되므로
     public void signUp(SignUpRequest req){
         // 전달받은 회원가입 정보가 유효한지 검사
         validateSignUpInfo(req);
@@ -35,6 +36,8 @@ public class SignService {
                 roleRepository.findByRoleType(RoleType.ROLE_NORMAL).orElseThrow(RoleNotFoundException::new),
                 passwordEncoder));
     }
+
+    // 조회만 하므로 Transactional 필요 x
     public SignInResponse signIn(SignInRequest req){
         // 로그인 요청받은 멤버를 DB에서 조회
         Member member = memberRepository.findByEmail(req.getEmail()).orElseThrow(LoginFailureException::new);
@@ -52,12 +55,14 @@ public class SignService {
 
     private void validateSignUpInfo(SignUpRequest req){
         // 회원가입시 체크해야하는 상황
+        // 이메일 중복 x, 닉네임 중복 x
         if(memberRepository.existsByEmail(req.getEmail()))
             throw new MemberEmailAlreadyExistsException(req.getEmail());
         if(memberRepository.existsByNickname(req.getNickname()))
             throw new MemberNicknameAlreadyExistsException(req.getNickname());
     }
 
+    // 입력된 비밀번호 유효성 검증
     private void validatePassword(SignInRequest req, Member member){
         if(!passwordEncoder.matches(req.getPassword(), member.getPassword())){
             throw new LoginFailureException();

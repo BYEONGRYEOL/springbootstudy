@@ -29,7 +29,8 @@ public class JwtHandler {
     private Jws<Claims> parse(String key, String token){
         return Jwts.parser()
                 .setSigningKey(key)
-                .parseClaimsJws(untype(token)); // type을 제거해야 Claims만 남는다.
+                .parseClaimsJws(untype(token)); // type을 제거한 token의 내용만 남은걸로
+        //parseclaimsJws 토큰을 jws로 파싱한다.
     }
 
     private String untype(String token){

@@ -8,6 +8,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class JwtHandlerTest {
     JwtHandler jwtHandler = new JwtHandler();
 
+
+    // 토큰이 잘 만들어졌는가?
+    // 토큰에서 Subject를 추출 가능?
+    // 내가 만든 validate함수가 유효한가?
+    // 유효기간이 지난것을 확인할수있는가
     @Test
     void createTokenTest() {
         //given
