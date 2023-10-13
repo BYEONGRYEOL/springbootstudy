@@ -1,4 +1,4 @@
-package com.example.full.contoller;
+package com.example.full.controller;
 
 import com.example.full.service.EntityService;
 import com.example.full.entity.JPAEntity;

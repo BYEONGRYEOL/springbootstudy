@@ -1,11 +1,9 @@
 package com.example.full.dto.sign;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.*;
 
 @Getter
-@EqualsAndHashCode
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class SignInResponse {
     private String accessToken;
